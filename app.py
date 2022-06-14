@@ -1,0 +1,37 @@
+from git import Commit
+import streamlit as st
+import psycopg2 as pg
+st.set_page_config(page_title='Titulo do site',
+                   page_icon='chart_with_upwards_trend',
+                   layout='wide',
+                   initial_sidebar_state="expanded")
+
+tipo = st.selectbox('Selecione a Marca do Veículo',('BMW', 'Chevrolet', 'Honda', 'Volkswagen', 'Audi'))
+titulo = st.text_input('Modelo do Veículo')
+descricao = st.text_area('Descreva as especificações do Veículo')
+valor = st.number_input('Valor do Veículo')
+data = st.date_input('Data Cadastro')
+
+print(tipo)
+print(titulo)
+
+
+
+def add_Data():
+    db_conection = pg.connect (host='ec2-52-22-136-117.compute-1.amazonaws.com', database='d6htu9r7cai1to',
+                                         user='tlxrudtcmkztiu', password='580615416fae5be0b100cd3f407807497e0f6f53f25ba2568681cf60673c3564', port='5432')
+    db_cursor = db_conection.cursor()
+    db_cursor.execute(f'''
+        INSERT INTO public.prod
+        (tipo, titulo, descricao, valor, datac)
+        VALUES('{tipo}', '{titulo}', '{descricao}', '{valor}', '{data}');
+
+    '''
+    ) 
+    db_conection.commit()
+if st.button('Salvar'):
+    if titulo == '':
+        st.error('Preencha o campo título')
+    else:
+        add_Data()
+        st.success('Cadastrado com Sucesso')
